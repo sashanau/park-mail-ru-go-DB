@@ -1,8 +1,8 @@
 package main
 
 import (
-	_forumHandlers "DbGODZ/internal/app/delivery"
-	_forumRepo "DbGODZ/internal/app/repository"
+	_Handlers "DbGODZ/internal/app/delivery"
+	_Repo "DbGODZ/internal/app/repository"
 	"github.com/fasthttp/router"
 	"github.com/jackc/pgx"
 	"github.com/rs/zerolog/log"
@@ -27,8 +27,8 @@ func main() {
 	if err != nil {
 		log.Error().Msgf(err.Error())
 	}
-	forumRepo := _forumRepo.NewPostgresForumRepository(connPool)
-	forumHandler := _forumHandlers.NewHandler(forumRepo)
+	forumRepo := _Repo.NewPostgresForumRepository(connPool)
+	forumHandler := _Handlers.NewHandler(forumRepo)
 
 	r := router.New()
 	r.POST("/api/user/{nickname}/create", forumHandler.Add)
