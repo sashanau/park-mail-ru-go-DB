@@ -49,8 +49,6 @@ CREATE UNLOGGED TABLE vote
     nickname CITEXT NOT NULL REFERENCES users (nickname),
     voice    INT,
     idThread INT REFERENCES thread (id),
-    FOREIGN KEY (nickname) REFERENCES users (nickname),
-    FOREIGN KEY (idThread) REFERENCES thread (id),
     UNIQUE (nickname, idThread)
 );
 
