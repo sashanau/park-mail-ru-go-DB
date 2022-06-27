@@ -55,10 +55,8 @@ CREATE UNLOGGED TABLE vote
 
 CREATE UNLOGGED TABLE users_forum
 (
-    nickname CITEXT COLLATE "ucs_basic" NOT NULL,
-    Slug     CITEXT NOT NULL,
-    FOREIGN KEY (nickname) REFERENCES users (nickname),
-    FOREIGN KEY (Slug) REFERENCES forum (Slug),
+    nickname CITEXT COLLATE "ucs_basic" NOT NULL REFERENCES users (nickname),
+    Slug     CITEXT NOT NULL REFERENCES forum (Slug),
     UNIQUE (nickname, Slug)
 );
 
