@@ -3,32 +3,35 @@ CREATE SCHEMA public;
 
 CREATE EXTENSION IF NOT EXISTS citext;
 
-CREATE UNLOGGED TABLE IF NOT EXISTS users (
-    nickname    CITEXT UNIQUE PRIMARY KEY,
-    email       CITEXT UNIQUE NOT NULL,
-    fullname    TEXT NOT NULL,
-    about       TEXT NOT NULL
+CREATE UNLOGGED TABLE "users"
+(
+    about    text,
+    email    citext UNIQUE,
+    fullName text NOT NULL,
+    nickname citext PRIMARY KEY
 );
 
-CREATE UNLOGGED TABLE IF NOT EXISTS forum (
-    slug        CITEXT NOT NULL PRIMARY KEY,
-    title       TEXT NOT NULL,
-    posts       BIGINT DEFAULT 0 NOT NULL,
-    threads     BIGINT DEFAULT 0 NOT NULL,
-    "user"      CITEXT NOT NULL REFERENCES users(nickname)
+CREATE UNLOGGED TABLE forum
+(
+    user  citext REFERENCES "users" (nickname),
+    Posts   BIGINT DEFAULT 0,
+    Slug    citext PRIMARY KEY,
+    Threads INT    DEFAULT 0,
+    title   text
 );
 
 CREATE UNLOGGED TABLE thread
 (
-    id          SERIAL NOT NULL PRIMARY KEY,
-    created     TIMESTAMPTZ,
-    slug        CITEXT,
-    message     TEXT NOT NULL,
-    title       TEXT NOT NULL,
-    votes       INTEGER DEFAULT 0 NOT NULL,
-    author      CITEXT NOT NULL REFERENCES users(nickname),
-    forum       CITEXT NOT NULL REFERENCES forums(slug)
+    author  citext REFERENCES users (nickname),
+    created timestamp with time zone default now(),
+    forum   citext,
+    id      SERIAL PRIMARY KEY,
+    message text NOT NULL,
+    slug    citext UNIQUE REFERENCES forum (slug),
+    title   text not null,
+    votes   INT                      default 0,
 );
+
 CREATE OR REPLACE FUNCTION update_user_forum() RETURNS TRIGGER AS
 $$
 BEGIN
@@ -40,15 +43,15 @@ $$ LANGUAGE plpgsql;
 
 CREATE UNLOGGED TABLE post
 (
-    id          SERIAL NOT NULL PRIMARY KEY,
-    created     TIMESTAMPTZ NOT NULL,
-    isEdited    BOOLEAN DEFAULT FALSE NOT NULL,
-    message     TEXT NOT NULL,
-    author      CITEXT NOT NULL REFERENCES users(nickname),
-    thread      BIGINT NOT NULL REFERENCES thread(id),
-    forum       CITEXT NOT NULL REFERENCES forum(slug),
-    parent      BIGINT NOT NULL,
-    path        int[]  DEFAULT ARRAY[] :: INT[]
+    author   citext NOT NULL REFERENCES "users" (nickname),
+    created  timestamp with time zone default now(),
+    forum    citext REFERENCES "forum" (slug),
+    id       BIGSERIAL PRIMARY KEY,
+    isEdited BOOLEAN                  DEFAULT FALSE,
+    message  text   NOT NULL,
+    parent   BIGINT                   DEFAULT 0 REFERENCES "post" (id),
+    thread   INT REFERENCES "thread" (id),
+    path     BIGINT[]                 default array []::INTEGER[]
 );
 
 CREATE OR REPLACE FUNCTION update_path() RETURNS TRIGGER AS
@@ -78,17 +81,14 @@ CREATE UNLOGGED TABLE vote
     nickname citext NOT NULL REFERENCES users (nickname),
     voice    INT,
     idThread INT REFERENCES thread (id),
-
     UNIQUE (nickname, idThread)
 );
 
 
 CREATE UNLOGGED TABLE users_forum
 (
-    nickname citext NOT NULL,
-    Slug     citext NOT NULL,
-    FOREIGN KEY (nickname) REFERENCES users (nickname),
-    FOREIGN KEY (Slug) REFERENCES forum (Slug),
+    nickname citext NOT NULL REFERENCES users (nickname),
+    Slug     citext NOT NULL REFERENCES forum (Slug),
     UNIQUE (nickname, Slug)
 );
 
