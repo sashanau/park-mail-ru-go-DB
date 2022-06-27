@@ -8,7 +8,7 @@ CREATE UNLOGGED TABLE "users"
     about    text,
     email    citext UNIQUE,
     fullName text NOT NULL,
-    nickname citext PRIMARY KEY
+    nickname citext COLLATE "ucs_basic" PRIMARY KEY
 );
 
 CREATE UNLOGGED TABLE forum
@@ -87,7 +87,7 @@ CREATE UNLOGGED TABLE vote
 
 CREATE UNLOGGED TABLE users_forum
 (
-    nickname citext NOT NULL REFERENCES users (nickname),
+    nickname citext COLLATE "ucs_basic" NOT NULL REFERENCES users (nickname),
     Slug     citext NOT NULL REFERENCES forum (Slug),
     UNIQUE (nickname, Slug)
 );
