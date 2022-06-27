@@ -123,28 +123,28 @@ CREATE TRIGGER add_thread_to_forum BEFORE INSERT ON thread FOR EACH ROW EXECUTE 
 
 
 
-CREATE INDEX post_first_parent_thread_index ON post ((post.path[1]), thread);
-CREATE INDEX post_first_parent_id_index ON post ((post.path[1]), id);
-CREATE INDEX post_first_parent_index ON post ((post.path[1]));
-CREATE INDEX post_path_index ON post ((post.path));
-CREATE INDEX post_thread_index ON post (thread);
-CREATE INDEX post_thread_id_index ON post (thread, id);
-CREATE INDEX forum_slug_lower_index ON forum (lower(forum.Slug));
-CREATE INDEX users_nickname_lower_index ON users (lower(users.Nickname));
-CREATE INDEX users_nickname_index ON users ((users.Nickname));
-CREATE INDEX users_email_index ON users (lower(Email));
-CREATE INDEX users_forum_forum_user_index ON users_forum (lower(users_forum.Slug), nickname);
-CREATE INDEX users_forum_user_index ON users_forum (nickname);
-CREATE INDEX thread_slug_lower_index ON thread (lower(slug));
-CREATE INDEX thread_slug_index ON thread (slug);
-CREATE INDEX thread_slug_id_index ON thread (lower(slug), id);
-CREATE INDEX thread_forum_lower_index ON thread (lower(forum));
-CREATE INDEX thread_id_forum_index ON thread (id, forum);
-CREATE INDEX thread_created_index ON thread (created);
-CREATE INDEX vote_nickname ON vote (lower(nickname), idThread, voice);
-CREATE INDEX post_path_id_index ON post (id, (post.path));
-CREATE INDEX post_thread_path_id_index ON post (thread, (post.parent), id);
-CREATE INDEX users_forum_forum_index ON users_forum ((users_forum.Slug));
+CREATE INDEX post_path_thread ON post ((post.path[1]), thread);
+CREATE INDEX post_path1_id ON post ((post.path[1]), id);
+CREATE INDEX post_path1 ON post ((post.path[1]));
+CREATE INDEX post_path ON post ((post.path));
+CREATE INDEX post_thread ON post (thread);
+CREATE INDEX post_thread_id ON post (thread, id);
+CREATE INDEX forum_slug_lower ON forum (lower(forum.Slug));
+CREATE INDEX users_nickname_lower ON users (lower(users.Nickname));
+CREATE INDEX users_nickname ON users ((users.Nickname));
+CREATE INDEX users_email ON users (lower(Email));
+CREATE INDEX users_forum_slug_nickname ON users_forum (lower(users_forum.Slug), nickname);
+CREATE INDEX users_forum_nickname ON users_forum (nickname);
+CREATE INDEX thread_slug_lower ON thread (lower(slug));
+CREATE INDEX thread_slug ON thread (slug);
+CREATE INDEX thread_slug_lower_id ON thread (lower(slug), id);
+CREATE INDEX thread_forum_lower ON thread (lower(forum));
+CREATE INDEX thread_id_forum ON thread (id, forum);
+CREATE INDEX thread_created ON thread (created);
+CREATE INDEX vote_nickname_idThread_voice ON vote (lower(nickname), idThread, voice);
+CREATE INDEX post_id_path ON post (id, (post.path));
+CREATE INDEX post_thread_parent_id ON post (thread, (post.parent), id);
+CREATE INDEX users_forum_slug ON users_forum ((users_forum.Slug));
 
 
 -- explain SELECT nickname, fullname, about, email FROM forum_users WHERE forum = '123' AND nickname > '1234'
