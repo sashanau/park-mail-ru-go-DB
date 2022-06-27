@@ -75,12 +75,10 @@ $$ LANGUAGE plpgsql;
 
 CREATE UNLOGGED TABLE vote
 (
-    nickname citext NOT NULL,
+    nickname citext NOT NULL REFERENCES users (nickname),
     voice    INT,
-    idThread INT,
+    idThread INT REFERENCES thread (id),
 
-    FOREIGN KEY (nickname) REFERENCES "users" (nickname),
-    FOREIGN KEY (idThread) REFERENCES "thread" (id),
     UNIQUE (nickname, idThread)
 );
 
@@ -89,8 +87,8 @@ CREATE UNLOGGED TABLE users_forum
 (
     nickname citext NOT NULL,
     Slug     citext NOT NULL,
-    FOREIGN KEY (nickname) REFERENCES "users" (nickname),
-    FOREIGN KEY (Slug) REFERENCES "forum" (Slug),
+    FOREIGN KEY (nickname) REFERENCES users (nickname),
+    FOREIGN KEY (Slug) REFERENCES forum (Slug),
     UNIQUE (nickname, Slug)
 );
 
